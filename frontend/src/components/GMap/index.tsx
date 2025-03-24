@@ -1,20 +1,18 @@
 import { CompassCalibration, LocationOn, ZoomIn, ZoomOut } from "@mui/icons-material";
 import { Grid2, IconButton } from "@mui/material";
-import { APIProvider, Map } from "@vis.gl/react-google-maps";
-import { MouseEvent, useState } from "react";
-
-export interface LatLng {
-    lattitude: number;
-    longitude: number;
-};
+import { APIProvider, Map, MapCameraChangedEvent, MapMouseEvent, Marker } from "@vis.gl/react-google-maps";
+import React, { MouseEvent, useState } from "react";
+import { useDrawingManager } from "./DrawingManager";
 
 interface GMapProps {
-    onLocationSelected?: (latlng: LatLng) => void;  
+    onLocationSelected?: (latlng: google.maps.LatLngLiteral) => void;  
 };
 
 function GMap({ onLocationSelected }: GMapProps) {
-    const [zoom, setZoom] = useState<number>(3);
-
+    const [zoom, setZoom] = useState<number>(15);
+    const [markers, setMarkers] = useState<google.maps.LatLngLiteral[]>([]);
+    
+    const drawingManager = useDrawingManager();
 
     function handleZoomInClick(event: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>): void {
         setZoom(prev => prev+1);
@@ -22,6 +20,19 @@ function GMap({ onLocationSelected }: GMapProps) {
 
     function handleZoomOutClick(event: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>): void {
         setZoom(prev => prev-1);
+    }
+
+    function handleMapClick(event: MapMouseEvent): void {
+        if(!event.detail.latLng || event.detail.latLng === null) return;
+        const latlng = event.detail.latLng;
+        setMarkers((current) => [
+            ...current,
+            latlng
+        ]);
+    }
+
+    function handleZoomChange(event: MapCameraChangedEvent): void {
+        setZoom(event.detail.zoom);
     }
 
     return (
@@ -54,12 +65,23 @@ function GMap({ onLocationSelected }: GMapProps) {
                     defaultCenter={{
                         lat: 6.9271, lng: 79.8612
                     }}
-                    defaultZoom={30}
+                    defaultZoom={15}
                     zoom={zoom}
                     mapTypeId={"terrain"}
                     gestureHandling={"greedy"}
                     disableDefaultUI={true}
-                />
+                    onClick={handleMapClick}
+                    onZoomChanged={handleZoomChange}
+                >
+                    {markers.map((marker) => (
+                        <Marker
+                            position={{
+                                lat: marker.lat,
+                                lng: marker.lng
+                            }}
+                        />
+                    ))}
+                </Map>
             </APIProvider>
         </>
     );

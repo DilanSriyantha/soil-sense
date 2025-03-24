@@ -17,8 +17,40 @@ export function useDrawingManager(
             drawingMode: google.maps.drawing.OverlayType.CIRCLE,
             drawingControl: true,
             drawingControlOptions: {
-                position: google.maps.ControlPosition
+                position: google.maps.ControlPosition.TOP_CENTER,
+                drawingModes: [
+                    google.maps.drawing.OverlayType.MARKER,
+                    google.maps.drawing.OverlayType.CIRCLE,
+                    google.maps.drawing.OverlayType.POLYLINE,
+                    google.maps.drawing.OverlayType.RECTANGLE
+                ]
+            },
+            markerOptions: {
+                draggable: true,
+            },
+            circleOptions: {
+                editable: true,
+            },
+            polygonOptions: {
+                editable: true,
+                draggable: true
+            },
+            rectangleOptions: {
+                editable: true,
+                draggable: true,
+            },
+            polylineOptions: {
+                editable: true,
+                draggable: true
             }
-        })
-    }, []);
+        });
+
+        setDrawingManager(newDrawingManager);
+
+        return () => {
+            newDrawingManager.setMap(null);
+        }
+    }, [drawing, map]);
+
+    return drawingManager;
 };
