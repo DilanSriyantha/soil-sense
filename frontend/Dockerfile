@@ -16,7 +16,7 @@ RUN npm run build
 
 # use nginx to serve frontend
 FROM nginx:alpine
-COPY --from=0 /soil_sense_app/frontend/dist /usr/share/nginx/html
+COPY --from=0 /soil_sense_app/dist /usr/share/nginx/html
 
 # expose port 80
 EXPOSE 80

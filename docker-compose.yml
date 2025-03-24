@@ -1,13 +1,18 @@
+version: '1'
 services:
   frontend:
-    build: ./frontend
+    build: 
+      context: ./frontend
+    image: dilansriyantha/soil-sense-frontend:latest
     ports:
       - "3000:80"
     depends_on:
       - backend
 
   backend:
-    build: ./backend
+    build: 
+      context: ./backend
+    image: dilansriyantha/soil-sense-backend:latest
     ports:
       - "5000:5000"
     environment:
