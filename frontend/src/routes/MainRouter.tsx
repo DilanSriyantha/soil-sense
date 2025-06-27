@@ -4,6 +4,7 @@ import Loader from "./Loader";
 import { lazy } from "react";
 
 const HomePage = Loader(lazy(() => import("../pages/Home")));
+const InsertDataPage = Loader(lazy(() => import("../pages/InsertData")));
 
 const MainRoutes: RouteObject[] = [
     {
@@ -13,6 +14,10 @@ const MainRoutes: RouteObject[] = [
             {
                 path: "",
                 element: <HomePage />
+            },
+            {
+                path: "insert-data",
+                element: <InsertDataPage />
             }
         ]
     }

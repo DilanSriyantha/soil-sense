@@ -1,0 +1,6 @@
+*range -> to  10 meter
+*sampleID, lattitude, longitude, location, water table, bed rock should be on the marker description and other 2 columns on the bottom table 
+*data input feature should be there
+*when a pin is placed, if we have no data in the database, we have to pinpoint the nearby locations within 1km radius around the selected position.
+
+!!! DEADLINE JUNE LAST WEEK !!!
