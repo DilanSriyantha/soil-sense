@@ -44,16 +44,14 @@ function Home() {
                                 <Stack direction={"column"} gap={2}>
                                     {
                                         markers.map((marker, idx) => (
-                                            <div key={idx}>
-                                                <MarkerInformation 
-                                                    index={idx}
-                                                    onSetNearbyMarkers={handleSetNearbyMarkers}
-                                                    onRemoveClick={() => handleRemoveMarker(marker)}
-                                                    lat={marker.latLng.lat}
-                                                    lng={marker.latLng.lng}
-                                                    range="10m"
-                                                />
-                                            </div>
+                                            <MarkerInformation
+                                                index={idx}
+                                                onSetNearbyMarkers={handleSetNearbyMarkers}
+                                                onRemoveClick={() => handleRemoveMarker(marker)}
+                                                lat={marker.latLng.lat}
+                                                lng={marker.latLng.lng}
+                                                range="10m"
+                                            />
                                         ))
                                     }
                                 </Stack>

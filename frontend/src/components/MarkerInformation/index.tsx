@@ -1,10 +1,10 @@
-import { Close } from "@mui/icons-material";
-import { Card, Stack, Typography, IconButton, Box, Button } from "@mui/material";
+import { Close, ExpandMore } from "@mui/icons-material";
+import { Card, Stack, Typography, IconButton, Box, Button, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 import { useApi } from "../../hooks/useApi";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { SecondaryMarker } from "../GMap";
-import { toLatLngLiteral } from "@vis.gl/react-google-maps";
+import { BHInfo } from "../BHInputPanel";
 
 interface MarkerInformationProps {
     onRemoveClick: () => void;
@@ -27,7 +27,7 @@ interface Result {
     loc: string;
     water_table: number;
     bed_rock_level: number;
-    soil_properties: SoilProperty[];
+    bh_info: BHInfo[];
 };
 
 const columns: GridColDef<SoilProperty>[] = [
@@ -46,12 +46,12 @@ export default function MarkerInformation(props: MarkerInformationProps) {
 
     async function fetchInformation() {
         try{
-            const res = await api.get<Result[]>("/getData", {
+            const res = await api.get<Result>("/getData", {
                 lat: `${props.lat}`,
                 lng: `${props.lng}`
             });
 
-            setResult(res[0]);
+            setResult(res);
         }catch(err) {
             console.log(err instanceof Error ? err.message : "Unknown error.");
         }
@@ -109,7 +109,7 @@ export default function MarkerInformation(props: MarkerInformationProps) {
                         <Typography variant="body1">{props.range}</Typography>
                     </Box>
                     {
-                        result 
+                        result && JSON.stringify(result) !== "{}"
                         ?
                             <>
                                 <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
@@ -121,12 +121,30 @@ export default function MarkerInformation(props: MarkerInformationProps) {
                                     <Typography variant="body1">{result.bed_rock_level}</Typography>
                                 </Box>
                                 <Box sx={{ p: 2 }}>
-                                    <DataGrid
-                                        rows={result.soil_properties}
-                                        columns={columns}
-                                        disableRowSelectionOnClick
-                                        autoPageSize
-                                    />
+                                    <div>
+                                        {result.bh_info && result.bh_info.map((bhi, idx) => (
+                                            <Accordion key={idx}>
+                                                <AccordionSummary
+                                                    expandIcon={<ExpandMore />}
+                                                    aria-controls={`panel${bhi.number}-content`}
+                                                    id={`panel${bhi.number}-header`}
+                                                >
+                                                    <Typography component="span">BH {bhi.number}</Typography>
+                                                </AccordionSummary>
+                                                <AccordionDetails>
+                                                    <Box sx={{ display: "flex" }}>
+                                                        <DataGrid
+                                                            rows={bhi.soil_properties}
+                                                            columns={columns}
+                                                            disableRowSelectionOnClick
+                                                            autoPageSize
+                                                        />
+                                                    </Box>
+                                                </AccordionDetails>
+                                            </Accordion>
+                                        ))}
+                                    </div>
+                                    
                                 </Box>
                             </>
                         :

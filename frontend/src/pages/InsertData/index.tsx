@@ -1,8 +1,9 @@
 import { Box, Button, Card, Container, Divider, Stack, TextField, Typography } from "@mui/material";
-import SoilPropertyInput, { SoilPropertyInputHandle } from "../../components/SoilPropertyInput";
 import { useCallback, useReducer, useRef, useState } from "react";
 import { SoilProperty } from "../../components/MarkerInformation";
 import { useApi } from "../../hooks/useApi";
+import BHInputPanel, { BHInfo, BHInputPanelHandle } from "../../components/BHInputPanel";
+import { useAlert } from "../../hooks/useAlert";
 
 interface InsertDataState {
     latitude: number;
@@ -18,7 +19,7 @@ export interface SoilInfomation {
     location: string;
     water_table: number;
     bed_rock_level: number;
-    soil_properties: SoilProperty[];
+    bh_info: BHInfo[];
 };
 
 enum ActionType {
@@ -59,41 +60,57 @@ const reducer = (state: InsertDataState, action: { type: ActionType, payload: an
 
 export default function InsertData() {
     const [state, dispatch] = useReducer(reducer, initialState);
-    const[loading, setLoading] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
 
-    const soilPropertyInputRef = useRef<SoilPropertyInputHandle>(null);
+    const BHInputPanelRef = useRef<BHInputPanelHandle>(null);
 
+    const alert = useAlert();
     const api = useApi();
 
     const handleCLear = useCallback(() => {
         dispatch({ type: ActionType.CLEAR_ALL, payload: null });
 
-        if(soilPropertyInputRef.current)
-            soilPropertyInputRef.current.clear();
+        if(BHInputPanelRef.current === null) return;
+
+        BHInputPanelRef.current.clearAll();
     }, []);
 
     function handleSubmit() {
-        if(!soilPropertyInputRef.current) return;
+        if(!BHInputPanelRef.current) return;
 
         insertNewRecord();
     };
 
     async function insertNewRecord() {
+        if(BHInputPanelRef.current === null) return;
+
+        setLoading(true);
+
+        const soilInfo: SoilInfomation = {
+            ...state,
+            bh_info: BHInputPanelRef.current.getBHInformation(),
+        };
+
+        console.log(soilInfo);
+
         try{
-            if(!soilPropertyInputRef.current) return;
+            const res = await api.post("/insert", soilInfo);
 
-            const newEntry: SoilInfomation = {
-                ...state,
-                soil_properties: soilPropertyInputRef.current.getRows()
-            };
-
-            const res = await api.post("/insert", newEntry);
             if(!res)
-                throw new Error("Something went wrong!");
+                throw new Error("Something went wrong");
 
             console.log(res);
-        }catch(err) {
+
+            setTimeout(() => {
+                alert.showSuccess(res.message);
+                setLoading(false);
+            }, 1000);
+        }catch(err){
             console.log(err instanceof Error ? err.message : "Unknown error.");
+            setTimeout(() => {
+                console.log(err instanceof Error ? err.message : "Unknown error.");
+                setLoading(false);
+            }, 1000);
         }
     }
 
@@ -109,8 +126,7 @@ export default function InsertData() {
                     <TextField variant="outlined" label="Water Table" name="water_table" type="number" value={state.water_table} onChange={(e) => dispatch({ type: ActionType.CHANGE_WATER_TABLE, payload: e.target.value })} />
                     <TextField variant="outlined" label="Bed Rock Level" name="bed_rock_level" type="number" value={state.bed_rock_level} onChange={(e) => dispatch({ type: ActionType.CHANGE_BED_ROCK_LEVEL, payload: e.target.value })} />
                     <Box sx={{ display: "flex", flexDirection: "column", textAlign: "start", pt: 2 }}>
-                        <Typography variant="body2" sx={{ pb: 1 }}>Soil Properties</Typography>
-                        <SoilPropertyInput ref={soilPropertyInputRef} />
+                        <BHInputPanel ref={BHInputPanelRef} />
                     </Box>
                 </Stack>
                 <Divider />
