@@ -1,0 +1,9 @@
+{
+  "name": "terzhagi_calculator",
+  "version": "1.0.0",
+  "description": "terzhagi calculator",
+  "main": "index.js",
+  "type": "module",
+  "author": "T.D.Dilan Sriyantha",
+  "license": "MIT"
+}

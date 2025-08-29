@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql2");
+const { TerzhagiCalc } = require("./terzhagi_calculator");
 require("dotenv").config();
 
 const app = express();
@@ -391,12 +392,12 @@ app.get("/api/v1/data/getNearbyData", (req, res) => {
         };
 
         const constructPositionObject = (p_idx, position_properties) => {
-            if(p_idx >= results.length) return;
+            if (p_idx >= results.length) return;
 
-            if(p_idx > 0 && results[p_idx - 1].position_id === results[p_idx].position_id)
+            if (p_idx > 0 && results[p_idx - 1].position_id === results[p_idx].position_id)
                 return constructPositionObject(++p_idx, position_properties);
 
-            if(!position_properties)
+            if (!position_properties)
                 position_properties = [];
 
             if (results.length > 0) {
@@ -410,7 +411,7 @@ app.get("/api/v1/data/getNearbyData", (req, res) => {
                     bh_info: constructBHInfoObject(0, results[p_idx].position_id),
                 });
             }
-            
+
             constructPositionObject(++p_idx, position_properties);
             return position_properties;
         };
@@ -419,6 +420,29 @@ app.get("/api/v1/data/getNearbyData", (req, res) => {
 
         res.status(200).json(resultData);
     });
+});
+
+app.post("/api/v1/data/terzhagi", (req, res) => {
+    // const params = { c: 25, gamma: 10, phi: 30, applied_load: 1500, FS: 3, t_conc: 0.3 };
+
+    const params = req.body;
+
+    const options = TerzhagiCalc.generate_options(
+        params.c,
+        params.gamma,
+        params.phi,
+        params.applied_load,
+        params.FS,
+        params.t_conc
+    );
+
+    const bestOptions = {
+        Square: TerzhagiCalc.pick_best(options.Square, 2),
+        Strip: TerzhagiCalc.pick_best(options.Strip, 2),
+        Rectangular: TerzhagiCalc.pick_best(options.Rectangular)
+    };
+
+    res.status(200).json(bestOptions);
 });
 
 app.listen(5000, () => console.log("server is running on port 5000"));

@@ -120,6 +120,10 @@ export default function MarkerInformation(props: MarkerInformationProps) {
                                     <Typography variant="body1">Bed Rock Level</Typography>
                                     <Typography variant="body1">{result.bed_rock_level}</Typography>
                                 </Box>
+                                <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+                                    <Typography variant="body1">Water Table</Typography>
+                                    <Typography variant="body1">{result.water_table}</Typography>
+                                </Box>
                                 <Box sx={{ p: 2 }}>
                                     <div>
                                         {result.bh_info && result.bh_info.map((bhi, idx) => (

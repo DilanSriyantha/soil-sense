@@ -5,6 +5,7 @@ import { lazy } from "react";
 
 const HomePage = Loader(lazy(() => import("../pages/Home")));
 const InsertDataPage = Loader(lazy(() => import("../pages/InsertData")));
+const ShallowFoundationPage = Loader(lazy(() => import("../pages/ShallowFoundation")));
 
 const MainRoutes: RouteObject[] = [
     {
@@ -18,6 +19,10 @@ const MainRoutes: RouteObject[] = [
             {
                 path: "insert-data",
                 element: <InsertDataPage />
+            },
+            {
+                path: "shallow-foundation",
+                element: <ShallowFoundationPage />
             }
         ]
     }

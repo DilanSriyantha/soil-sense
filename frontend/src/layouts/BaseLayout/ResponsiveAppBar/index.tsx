@@ -14,7 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { Public } from '@mui/icons-material';
 import { useNavigate } from 'react-router';
 
-const pages = ['Insert Data'];
+const pages = ['Insert Data', 'Shallow Foundation'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function ResponsiveAppBar() {
@@ -40,8 +40,14 @@ function ResponsiveAppBar() {
 
   const handleMenuItemClick = (page: string) => {
     console.log(page);
-    if(page === "Insert Data"){
+    if (page === "Insert Data") {
       navigate("/insert-data");
+      handleCloseNavMenu();
+      return;
+    }
+
+    if (page === "Shallow Foundation") {
+      navigate("/shallow-foundation");
       handleCloseNavMenu();
       return;
     }
