@@ -1,7 +1,7 @@
-import { terzhagi_q_ult } from "./capacity.js";
-import { Option } from "./models.js";
+const { terzhagi_q_ult } = require("./capacity.js");
+const { Option } = require("./models.js");
 
-export function generate_options(c, gamma, phi, applied_load, FS, t_conc) {
+function generate_options(c, gamma, phi, applied_load, FS, t_conc) {
     const options = { Square: [], Strip: [], Rectangular: [] };
 
     const depth_start = 0.5, depth_end = 2.5, depth_step = 0.1;
@@ -58,4 +58,8 @@ export function generate_options(c, gamma, phi, applied_load, FS, t_conc) {
     }
 
     return options;
+}
+
+module.exports = {
+    generate_options
 }

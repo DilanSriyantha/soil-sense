@@ -24,7 +24,7 @@ function ShallowFoundation() {
     return (
         <Container>
             <Card sx={{ mt: 2, mb: 2 }}>
-                <Typography sx={{ p: 1, fontWeight: "600" }} textAlign={"start"} variant="body2">Terzhagi Calculator</Typography>
+                <Typography sx={{ p: 1, fontWeight: "600" }} textAlign={"start"} variant="body2">Bearing Capcity</Typography>
 
                 <Divider />
 
