@@ -31,7 +31,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = () => {
             >
                 <Outlet />
             </Box>
-            <Footer />
+            {/* <Footer /> */}
         </Box>
     );
 }
